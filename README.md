@@ -9,7 +9,10 @@ With that, run on your server (I'm using ZSH, if you're using anything else, Goo
 ```bash
 curl -X POST https://hub.myfood.eu/api/identity/token -d '{"userName":"<put the name between double quotes>", "password": "<put the password between double quotes>"}' -H 'Content-Type: application/json'
 ```
-
+With PowerShell it gives something like this :
+```PowerShell
+$response = Invoke-RestMethod -Uri "https://hub.myfood.eu/api/identity/token" -Method Post -ContentType "application/json" -Body '{"userName":"XXX.YYY@myfodd.eu", "password": "blalblz"}'
+```
 Copy the whole token value : 
 ```
 {"data":{"token":"a mega long string that must be completely copied",'"refreshToken":"..." ...}
@@ -21,7 +24,14 @@ Grab the info from your greenhouse using the following curl command (replace TOK
 ```bash
 curl "https://hub.myfood.eu/api/v1/ProductionUnit/GetProductionUnitDetailForUser?id=GREENHOUSE_ID" -X GET -H 'Authorization: Bearer 'TOKEN' -H 'Accept: */*'
 ```
-
+PowerShell
+```PowerShell
+$headers = @{"Authorization" = "Bearer $($response.data.token)"
+>> "Accept" = "*/*"
+>> "Content-Type" = "application/json"}
+$body = @{"id" = "GREENHOUSE_ID"}
+Invoke-RestMethod -Uri "https://hub.myfood.eu/api/v1/ProductionUnit/GetProductionUnitDetailForUser" -Body $body -Headers $headers
+```  
 This will generate an output like :
 ```json
 {
